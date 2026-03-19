@@ -1,55 +1,33 @@
 #! /usr/bin/env python3
 
-"A script for calculating the area of a rectangle."
-
 import sys
 
-
-def area_of_rectangle(height, width = None):
-    """
-    Returns the area of a rectangle.
-
-    Parameters
-    ----------
-    height : int or float 
-        The height of the rectangle.
-    width : int or float
-        The width of the rectangle. If `None` width is assumed to be equal to 
-        the height.
-
-    Returns
-    -------
-    int or float
-        The area of the rectangle
-
-    Examples
-    --------
-    >>> area_of_rectangle(7)
-    49
-    >>> area_of_rectangle (7, 2)
-    14
-    """
-    if width:
+def area_of_rectangle(height, width=None):
+    # Fix 1: Only set width to height if width is NOT provided
+    if width is None:
         width = height
-    area = height * width
-    return area
+    return height * width
 
 if __name__ == '__main__':
-    if (len(sys.argv) < 2) or (len(sys.argv) > 3):
-        message = (
-                "{script_name}: Expecting one or two command-line arguments:\n"
-                "\tthe height of a square or the height and width of a "
-                "rectangle".format(script_name = sys.argv[0]))
+    # Fix 2: Check for 2 or 3 total items (Script name + 1 or 2 numbers)
+    if not (2 <= len(sys.argv) <= 3):
+        message = ("{n}: Use 1 arg for square or 2 for rectangle.".format(n=sys.argv[0]))
         sys.exit(message)
-    height = sys.argv[1]
-    width = height
-    if len(sys.argv) > 3:
-        width = sys.argv[1]
 
-    area = area_of_rectangle(height, width)
+    try:
+        # Fix 3: Convert strings to floats
+        height = float(sys.argv[1])
+        
+        if len(sys.argv) == 3:
+            width = float(sys.argv[2])
+        else:
+            width = None
 
-    message = "The area of a {h} X {w} rectangle is {a}".format(
-            h = height,
-            w = width,
-            a = area)
-    print(message)
+        area = area_of_rectangle(height, width)
+        
+        # Determine what to print for the message
+        w_display = width if width is not None else height
+        print("The area of a {h} X {w} rectangle is {a}".format(h=height, w=w_display, a=area))
+        
+    except ValueError:
+        sys.exit("Error: Please provide numbers only.")
